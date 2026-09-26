@@ -1,0 +1,136 @@
+/* ==================================================================
+   FundTwin OS — Global Styles
+   ================================================================== */
+
+/* Google Fonts: Prompt (Thai) & Inter (Latin) */
+@import url('https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap');
+
+/* ==================================================================
+   CSS Custom Properties (Design Tokens)
+   ================================================================== */
+:root {
+  /* Brand Colors (Emerald / Green) */
+  --brand-50: #ecfdf5;
+  --brand-100: #d1fae5;
+  --brand-200: #a7f3d0;
+  --brand-500: #10b981;
+  --brand-600: #059669;
+  --brand-700: #047857;
+  --brand-800: #065f46;
+  --brand-900: #064e3b;
+  --brand-950: #022c22;
+
+  /* Slate extended */
+  --slate-850: #152033;
+  --slate-900: #0f172a;
+  --slate-950: #020617;
+
+  /* Typography */
+  --font-sans: 'Prompt', 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* ==================================================================
+   Base Reset & Typography
+   ================================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  background-color: #f8fafc; /* slate-50 */
+  color: #1e293b; /* slate-800 */
+}
+
+::selection {
+  background-color: var(--brand-500);
+  color: white;
+}
+
+/* ==================================================================
+   Custom Scrollbar
+   ================================================================== */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* ==================================================================
+   Utility Classes
+   ================================================================== */
+.custom-shadow {
+  box-shadow:
+    0 10px 25px -5px rgba(6, 78, 59, 0.05),
+    0 8px 10px -6px rgba(6, 78, 59, 0.05);
+}
+
+.badge-pulse {
+  animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse-ring {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.1); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* ==================================================================
+   Tailwind-like Utility Classes (manually defined for Vite build)
+   ================================================================== */
+
+/* ---- Brand color classes (bg, text, border) ---- */
+.bg-brand-50 { background-color: var(--brand-50); }
+.bg-brand-100 { background-color: var(--brand-100); }
+.bg-brand-200 { background-color: var(--brand-200); }
+.bg-brand-500 { background-color: var(--brand-500); }
+.bg-brand-600 { background-color: var(--brand-600); }
+.bg-brand-700 { background-color: var(--brand-700); }
+.bg-brand-800 { background-color: var(--brand-800); }
+.bg-brand-900 { background-color: var(--brand-900); }
+.bg-brand-950 { background-color: var(--brand-950); }
+
+.text-brand-200 { color: var(--brand-200); }
+.text-brand-300 { color: #6ee7b7; }
+.text-brand-700 { color: var(--brand-700); }
+.text-brand-800 { color: var(--brand-800); }
+.text-brand-900 { color: var(--brand-900); }
+
+.border-brand-100 { border-color: var(--brand-100); }
+.border-brand-200 { border-color: var(--brand-200); }
+.border-brand-600 { border-color: var(--brand-600); }
+.border-brand-700 { border-color: var(--brand-700); }
+
+/* ---- Additional extended slate ---- */
+.bg-slate-850 { background-color: var(--slate-850); }
+.bg-slate-950 { background-color: var(--slate-950); }

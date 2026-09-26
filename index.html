@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="th" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FundTwin OS — ลงทุนกองทุนรวมอย่างมั่นใจ</title>
+  <meta name="description" content="เปลี่ยน Factsheet ทางการเงินหนาหลายหน้า ให้เป็นภาษาคนเข้าใจง่าย พร้อมระบบ Watchtower เฝ้าระวังความเสี่ยงอัตโนมัติ" />
+
+  <!-- Tailwind CSS CDN (runtime utility classes) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Prompt', 'Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#ecfdf5', 100: '#d1fae5', 200: '#a7f3d0',
+              500: '#10b981', 600: '#059669', 700: '#047857',
+              800: '#065f46', 900: '#064e3b', 950: '#022c22'
+            },
+            slate: { 850: '#152033', 900: '#0f172a', 950: '#020617' }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="min-h-full flex flex-col font-sans bg-slate-50 text-slate-800 antialiased selection:bg-brand-500 selection:text-white">
+
+  <!-- ================================================ -->
+  <!-- HEADER / NAVIGATION BAR                          -->
+  <!-- ================================================ -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 gap-4">
+
+        <!-- Logo & Tagline -->
+        <div id="logo-home" class="flex items-center gap-3 cursor-pointer">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-700 to-brand-900 flex items-center justify-center text-white shadow-md shadow-brand-900/20">
+            <i data-lucide="shield-alert" class="w-5 h-5 text-brand-200"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="font-bold text-lg tracking-tight text-slate-900">FundTwin</span>
+              <span class="px-1.5 py-0.5 text-[10px] font-semibold bg-brand-100 text-brand-800 rounded">OS</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <nav class="flex items-center gap-1 sm:gap-2">
+          <button id="nav-landing"
+                  class="px-3 py-2 text-xs sm:text-sm font-medium rounded-lg transition-all flex items-center gap-1.5 text-brand-800 bg-brand-50 border border-brand-200 shadow-sm">
+            <i data-lucide="sparkles" class="w-4 h-4"></i>
+            <span>หน้าแรก & ประเมิน</span>
+          </button>
+          <button id="nav-screener"
+                  class="px-3 py-2 text-xs sm:text-sm font-medium rounded-lg transition-all flex items-center gap-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+            <i data-lucide="filter" class="w-4 h-4"></i>
+            <span>ค้นหากองทุน</span>
+          </button>
+          <button id="nav-watchtower"
+                  class="px-3 py-2 text-xs sm:text-sm font-medium rounded-lg transition-all flex items-center gap-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100 relative">
+            <i data-lucide="tower-control" class="w-4 h-4 text-emerald-600"></i>
+            <span>พอร์ต</span>
+            <span id="nav-alert-badge" class="flex h-2 w-2 rounded-full bg-rose-500 ring-2 ring-white"></span>
+          </button>
+        </nav>
+
+        <!-- Live Portfolio Header Summary Pill -->
+        <div class="hidden lg:flex items-center gap-3 pl-4 border-l border-slate-200 text-xs">
+          <div class="text-right">
+            <div class="text-slate-400 font-medium text-[11px]">พอร์ตจำลองเฝ้าระวัง</div>
+            <div class="font-bold text-slate-800 flex items-center gap-1.5">
+              <span id="nav-portfolio-total">฿85,000</span>
+              <span id="nav-portfolio-gain" class="text-emerald-600 font-semibold">(+8.4%)</span>
+            </div>
+          </div>
+          <button id="btn-portfolio-header" class="p-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 transition" title="ดูการแจ้งเตือน EOD">
+            <i data-lucide="bell" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- ================================================ -->
+    <!-- VIEW 1: LANDING & SMART RISK ONBOARDING          -->
+    <!-- ================================================ -->
+    <div id="view-landing" class="space-y-10">
+      <!-- Hero Section -->
+      <section class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-900 via-slate-900 to-slate-950 text-white p-8 sm:p-12 shadow-2xl">
+        <div class="relative z-10 max-w-2xl space-y-4">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/20 border border-brand-500/30 text-brand-300 text-xs font-medium">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            เชื่อมโยงข้อมูล ก.ล.ต. (SEC) & รายงานผู้จัดการกองทุนล่าสุด
+          </div>
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight leading-tight">
+            ลงทุนกองทุนรวมอย่างมั่นใจ <br>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-200 via-emerald-300 to-teal-100">
+              ไม่ต้องอ่านเอกสารยากๆ ให้ปวดหัว
+            </span>
+          </h1>
+          <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+            เปลี่ยน Factsheet ทางการเงินหนาหลายหน้า ให้เป็นภาษาคนเข้าใจง่าย พร้อมระบบคอยเตือนภัยอัตโนมัติ (Watchtower) ตรวจจับความเสี่ยงและแจ้งเตือนรายวัน EOD ให้เงินทำงานอย่างสบายใจ
+          </p>
+
+          <div class="pt-3 flex flex-wrap items-center gap-3">
+            <button id="cta-start-quiz"
+                    class="px-6 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-brand-600 hover:from-emerald-400 hover:to-brand-500 text-white font-semibold text-sm sm:text-base shadow-lg shadow-emerald-950/40 hover:scale-[1.02] transition-all flex items-center gap-2">
+              <i data-lucide="compass" class="w-5 h-5"></i>
+              <span>🚀 เริ่มจัดพอร์ตและค้นหากองทุนที่ใช่สำหรับคุณ</span>
+            </button>
+            <button id="cta-search-funds"
+                    class="px-5 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-slate-200 border border-white/10 text-sm font-medium transition flex items-center gap-2">
+              <i data-lucide="search" class="w-4 h-4"></i>
+              <span>ค้นหากองทุน</span>
+            </button>
+          </div>
+
+          <!-- Proof points -->
+          <div class="pt-4 grid grid-cols-3 gap-4 border-t border-slate-800/80 text-xs text-slate-400">
+            <div>
+              <div class="font-bold text-base text-white">100%</div>
+              <div>กองทุนจดทะเบียนในไทย</div>
+            </div>
+            <div>
+              <div class="font-bold text-base text-emerald-400">0 บาท</div>
+              <div>ไม่มีค่าบริการหรือค่านายหน้า</div>
+            </div>
+            <div>
+              <div class="font-bold text-base text-teal-300">EOD 20:00</div>
+              <div>แจ้งเตือนความเสี่ยงทุกค่ำ</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Fast Onboarding Preview Result Banner (if completed) -->
+      <section id="onboarding-result-banner" class="hidden p-6 rounded-2xl bg-gradient-to-r from-brand-900 to-slate-900 text-white border border-brand-700/50">
+        <div class="flex flex-col lg:flex-row items-center justify-between gap-6">
+          <div class="space-y-2">
+            <span class="text-xs font-semibold uppercase tracking-wider text-emerald-400">ผลวิเคราะห์พอร์ตแนะนำเฉพาะคุณ</span>
+            <h4 id="result-profile-name" class="text-xl font-bold">พอร์ตเน้นเติบโตระยะยาว (Growth Seeker)</h4>
+            <p id="result-profile-desc" class="text-xs text-slate-300 max-w-xl">
+              แนะนำให้กระจายการลงทุนในหุ้นเทคสหรัฐฯ 50%, หุ้นไทยชั้นนำ 30%, และตราสารหนี้ 20% เพื่อคุมความผันผวน
+            </p>
+          </div>
+          <div class="flex items-center gap-3">
+            <button id="btn-apply-portfolio" class="px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-white font-medium text-xs sm:text-sm flex items-center gap-2">
+              <i data-lucide="filter" class="w-4 h-4"></i>
+              <span>ดูกองทุนที่ตรงกับสัดส่วนนี้</span>
+            </button>
+            <button id="btn-redo-quiz" class="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs text-slate-200">
+              ทำแบบทดสอบใหม่
+            </button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ================================================ -->
+    <!-- VIEW 2: FUND SCREENER                            -->
+    <!-- ================================================ -->
+    <div id="view-screener" class="hidden space-y-6">
+      <!-- Page Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-bold text-slate-900">ค้นหาและคัดกรองกองทุนรวม</h2>
+          <p class="text-xs sm:text-sm text-slate-500">
+            ครอบคลุมกองทุนรวมที่จดทะเบียนในไทยและกองทุน FIF ต่างประเทศ พร้อมคะแนน Quant Score และ Red Flag
+          </p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <!-- View Toggle -->
+          <div class="flex items-center bg-slate-200/80 p-1 rounded-xl text-xs font-medium">
+            <button id="view-btn-table" class="px-3 py-1.5 rounded-lg bg-white shadow-sm text-slate-900 flex items-center gap-1.5 transition">
+              <i data-lucide="list" class="w-3.5 h-3.5"></i>
+              <span>ตาราง (Table)</span>
+            </button>
+            <button id="view-btn-cards" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 flex items-center gap-1.5 transition">
+              <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i>
+              <span>การ์ด (Cards)</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Layout: Sidebar Filter + Fund Table/Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
+
+        <!-- Sidebar Filter -->
+        <aside class="bg-white p-5 rounded-2xl border border-slate-200/80 space-y-5 shadow-sm">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h3 class="font-bold text-sm text-slate-900 flex items-center gap-2">
+              <i data-lucide="sliders-horizontal" class="w-4 h-4 text-brand-700"></i>
+              ตัวกรองกองทุน
+            </h3>
+            <button id="btn-reset-filters" class="text-xs text-brand-700 hover:underline">ล้างตัวกรอง</button>
+          </div>
+
+          <!-- Keyword Search -->
+          <div class="space-y-1.5">
+            <label class="text-xs font-medium text-slate-600">ค้นหาตามชื่อ / รหัสย่อ</label>
+            <div class="relative">
+              <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-2.5"></i>
+              <input type="text" id="filter-search" placeholder="เช่น K-USXNDQ, SCBDV, B-INNO..."
+                     class="w-full pl-9 pr-3 py-2 text-xs rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-700/20 focus:border-brand-700 transition">
+            </div>
+          </div>
+
+          <!-- Fund Management Company (บลจ.) -->
+          <div class="space-y-1.5">
+            <label class="text-xs font-medium text-slate-600">บลจ. / ตลาดหลักทรัพย์</label>
+            <select id="filter-amc" class="w-full text-xs p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-700/20">
+              <option value="ALL">ทุกลำดับ บลจ. & กองทุนสากล</option>
+              <option value="OneAM">บลจ. วรรณ (OneAM - SET)</option>
+              <option value="BBLAM">บลจ. บัวหลวง (BBLAM - SET)</option>
+              <option value="InnovestX">InnovestX (กองทุน ETF & หุ้นสากล)</option>
+            </select>
+          </div>
+
+          <!-- Asset Category -->
+          <div class="space-y-1.5">
+            <label class="text-xs font-medium text-slate-600">ประเภทกองทุน (Category)</label>
+            <select id="filter-category" class="w-full text-xs p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-700/20">
+              <option value="ALL">ทุกประเภทการลงทุน</option>
+              <option value="US_TECH">หุ้นเทคโนโลยีสหรัฐฯ & AI</option>
+              <option value="THAI_DIVIDEND">หุ้นไทยปันผลสูง</option>
+              <option value="GLOBAL_EQUITY">หุ้นเติบโตทั่วโลก (Global Equity)</option>
+              <option value="FIXED_INCOME">ตราสารหนี้ & สภาพคล่อง</option>
+              <option value="INDEX_S500">ดัชนี S&P500 Index</option>
+            </select>
+          </div>
+
+          <!-- Risk Level Filter -->
+          <div class="space-y-2">
+            <div class="flex items-center justify-between text-xs">
+              <span class="font-medium text-slate-600">ระดับความเสี่ยง (1-8)</span>
+              <span id="risk-level-display" class="font-bold text-brand-800">1 - 8 (ทั้งหมด)</span>
+            </div>
+            <div class="grid grid-cols-3 gap-1.5">
+              <button data-risk-level="LOW" class="risk-btn py-1.5 text-[11px] rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 font-medium">ต่ำ (1-4)</button>
+              <button data-risk-level="MID" class="risk-btn py-1.5 text-[11px] rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 font-medium">กลาง (5)</button>
+              <button data-risk-level="HIGH" class="risk-btn py-1.5 text-[11px] rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 font-medium">สูง (6-8)</button>
+            </div>
+          </div>
+
+          <!-- Red Flag Filter Checkbox -->
+          <div class="pt-2 border-t border-slate-100">
+            <label class="flex items-center gap-2 cursor-pointer select-none">
+              <input type="checkbox" id="filter-only-clean" class="rounded text-brand-700 focus:ring-brand-700 w-4 h-4">
+              <span class="text-xs text-slate-700 font-medium">แสดงเฉพาะกองที่ไม่มี Red Flag</span>
+            </label>
+          </div>
+
+          <!-- Explanation Tip -->
+          <div class="p-3 bg-brand-50/70 border border-brand-100 rounded-xl text-[11px] text-brand-900 space-y-1">
+            <div class="font-bold flex items-center gap-1">
+              <i data-lucide="info" class="w-3.5 h-3.5 text-brand-700"></i>
+              เกณฑ์คะแนน Quant Score
+            </div>
+            <p class="text-slate-600 leading-relaxed">
+              คะแนน 1-10 วัดจาก Sharpe Ratio (ผลตอบแทนต่อความเสี่ยง), ความต่อเนื่องของผลงาน, และค่าธรรมเนียมที่เป็นธรรม
+            </p>
+          </div>
+        </aside>
+
+        <!-- Fund List Main Area -->
+        <div class="lg:col-span-3 space-y-4">
+          <!-- Summary count bar -->
+          <div class="flex items-center justify-between px-1 text-xs text-slate-500">
+            <span>พบกองทุนที่ตรงตามเงื่อนไข <strong id="fund-result-count" class="text-slate-900 font-bold">5</strong> กองทุน</span>
+            <span class="flex items-center gap-1 text-[11px] text-slate-400">
+              <i data-lucide="clock" class="w-3 h-3"></i> อัปเดตราคา NAV EOD: เมื่อวาน 20:00 น.
+            </span>
+          </div>
+
+          <!-- Table View Container -->
+          <div id="screener-table-view" class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase tracking-wider text-[11px]">
+                  <tr>
+                    <th class="py-3 px-4">ชื่อกองทุน / บลจ.</th>
+                    <th class="py-3 px-3">หมวดหมู่ & ความเสี่ยง</th>
+                    <th class="py-3 px-3">NAV ล่าสุด (บาท)</th>
+                    <th class="py-3 px-3 text-center">เทรนด์ 1 เดือน</th>
+                    <th class="py-3 px-3 text-center">Quant Score</th>
+                    <th class="py-3 px-3">Red Flags</th>
+                    <th class="py-3 px-4 text-right">ดำเนินการ</th>
+                  </tr>
+                </thead>
+                <tbody id="fund-table-body" class="divide-y divide-slate-100 text-slate-700">
+                  <!-- Injected via JavaScript -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Card View Container (Hidden by default) -->
+          <div id="screener-cards-view" class="hidden grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Injected via JavaScript -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ================================================ -->
+    <!-- VIEW 3: FUND DEEP-DIVE & AI CHAT                 -->
+    <!-- ================================================ -->
+    <div id="view-deepdive" class="hidden space-y-6">
+
+      <!-- Top breadcrumb & back button -->
+      <div class="flex items-center justify-between">
+        <button id="btn-back-screener" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-brand-800 transition">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i>
+          <span>กลับไปหน้ารวมกองทุน</span>
+        </button>
+        <span class="text-xs text-slate-400">โหมดวิเคราะห์เชิงลึก 2 จอ (สถิติ & Factsheet AI)</span>
+      </div>
+
+      <!-- Split Layout 2 Panels -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+        <!-- LEFT PANEL (Col 7): Statistics, NAV Chart, Crisis Simulation -->
+        <div class="lg:col-span-7 space-y-5">
+
+          <!-- Fund Header Card -->
+          <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <div class="flex items-center gap-2">
+                  <h2 id="dd-fund-code" class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">K-USXNDQ-A(A)</h2>
+                  <span id="dd-fund-risk" class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800">เสี่ยงระดับ 6</span>
+                </div>
+                <p id="dd-fund-name" class="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">กองทุนเปิดเค หุ้นยูเอส ดัชนีเอ็นดีคิว-A ชนิดสะสมมูลค่า</p>
+              </div>
+
+              <!-- Action: Add to Portfolio -->
+              <button id="btn-add-portfolio"
+                      class="px-4 py-2.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-semibold text-xs sm:text-sm shadow-md shadow-brand-900/10 flex items-center justify-center gap-2 transition hover:scale-[1.02]">
+                <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                <span>เพิ่มเข้าพอร์ตลงทุน</span>
+              </button>
+            </div>
+
+            <!-- Key Quick Metrics -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 border-t border-slate-100 text-xs">
+              <div class="p-2.5 rounded-xl bg-slate-50">
+                <span class="text-slate-400 block text-[11px]">NAV ล่าสุด</span>
+                <span id="dd-fund-nav" class="font-bold text-slate-800 text-sm">18.4210 ฿</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-slate-50">
+                <span class="text-slate-400 block text-[11px]">ผลตอบแทน 1 ปี</span>
+                <span id="dd-fund-return1y" class="font-bold text-emerald-600 text-sm">+26.8%</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-slate-50">
+                <span class="text-slate-400 block text-[11px]">นโยบายปันผล</span>
+                <span id="dd-fund-dividend" class="font-bold text-slate-700 text-xs">ไม่จ่าย (สะสมมูลค่า)</span>
+              </div>
+              <div class="p-2.5 rounded-xl bg-slate-50">
+                <span class="text-slate-400 block text-[11px]">ค่าธรรมเนียมรวม</span>
+                <span id="dd-fund-fee" class="font-bold text-slate-700 text-xs">0.85% ต่อปี</span>
+              </div>
+            </div>
+
+            <!-- Interactive NAV Chart Container & Crisis Toggle -->
+            <div class="space-y-3 pt-2">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                  <h4 class="font-bold text-xs sm:text-sm text-slate-800">ผลการดำเนินงานย้อนหลัง vs ตลาด</h4>
+                  <span id="crisis-status-pill" class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-medium">สภาวะปกติ (Benchmark S&P500)</span>
+                </div>
+
+                <!-- Simulation Toggle Button -->
+                <button id="btn-crisis-toggle"
+                        class="px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-semibold flex items-center gap-1.5 transition">
+                  <i data-lucide="flame" class="w-3.5 h-3.5 text-rose-600"></i>
+                  <span>💥 จำลองสถานการณ์วิกฤต (Crisis Test)</span>
+                </button>
+              </div>
+
+              <!-- Crisis Notification Alert Box -->
+              <div id="crisis-alert-box" class="hidden p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-900 text-xs space-y-1 transition animate-fadeIn">
+                <div class="font-bold flex items-center gap-1.5 text-rose-700">
+                  <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+                  <span>ผลลัพธ์จำลอง Stress Test กรณีเกิดวิกฤตเศรษฐกิจ / ตลาดร่วงหนัก:</span>
+                </div>
+                <p class="text-slate-700 leading-relaxed">
+                  หากเกิดวิกฤตแรงเทียบเท่า COVID Crash หรือฟองสบู่ดอทคอม เงินลงทุน <strong>10,000 บาท</strong> ของคุณจะลดลงเหลือประมาณ <strong class="text-rose-600">7,450 บาท (-25.5%)</strong> และใช้เวลาฟื้นตัวเฉลี่ยประมาณ <strong>8 เดือน</strong> ก่อนกลับมาเท่าทุน
+                </p>
+              </div>
+
+              <!-- Main Chart Canvas -->
+              <div class="relative h-64 w-full bg-slate-50/50 rounded-xl p-2 border border-slate-100">
+                <canvas id="deepdiveNavChart"></canvas>
+              </div>
+            </div>
+
+            <!-- Top 5 Holdings Section -->
+            <div class="space-y-2.5 pt-2">
+              <div class="flex items-center justify-between">
+                <h4 class="font-bold text-xs sm:text-sm text-slate-800 flex items-center gap-1.5">
+                  <i data-lucide="pie-chart" class="w-4 h-4 text-brand-700"></i>
+                  <span>หุ้น Top 5 ที่กองทุนนี้ถือมากที่สุด</span>
+                </h4>
+                <span class="text-[11px] text-slate-400">อัปเดตตามรอบรายงาน บลจ.</span>
+              </div>
+
+              <div id="dd-holdings-list" class="space-y-1.5">
+                <!-- Injected via Javascript -->
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- RIGHT PANEL (Col 5): Factsheet AI Chatbot -->
+        <div class="lg:col-span-5 bg-white rounded-2xl border border-slate-200/80 shadow-sm flex flex-col h-[750px] overflow-hidden">
+
+          <!-- Chat Header -->
+          <div class="p-4 border-b border-slate-100 bg-gradient-to-r from-brand-900 to-slate-900 text-white flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-400/30 flex items-center justify-center text-emerald-300">
+                <i data-lucide="bot" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <h3 class="font-bold text-sm">Factsheet AI แชทแปลภาษาคน</h3>
+                <p class="text-[10px] text-emerald-300">ตอบอิงตามหนังสือชี้ชวน & รายงาน บลจ. ล่าสุด</p>
+              </div>
+            </div>
+            <span class="text-[10px] px-2 py-0.5 rounded bg-white/10 text-slate-300 font-mono">RAG Mode</span>
+          </div>
+
+          <!-- Suggested Quick Prompts -->
+          <div class="p-3 bg-slate-50 border-b border-slate-100">
+            <div class="text-[11px] font-medium text-slate-500 mb-1.5">💡 คำถามด่วนที่คนมักสงสัย:</div>
+            <div class="flex flex-wrap gap-1.5">
+              <button data-quick-prompt="กองทุนนี้เอาเงินเราไปลงในหุ้นอะไรบ้าง?"
+                      class="text-[11px] px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-slate-700 hover:border-brand-600 hover:text-brand-800 transition">
+                เอาเงินไปลงในอะไรบ้าง?
+              </button>
+              <button data-quick-prompt="กองทุนนี้มีปันผลไหม มีเงื่อนไขอย่างไร?"
+                      class="text-[11px] px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-slate-700 hover:border-brand-600 hover:text-brand-800 transition">
+                ปันผลไหม?
+              </button>
+              <button data-quick-prompt="เทียบกับดัชนี S&P500 ผลงานชนะหรือแพ้?"
+                      class="text-[11px] px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-slate-700 hover:border-brand-600 hover:text-brand-800 transition">
+                ชนะหรือแพ้ตลาด?
+              </button>
+              <button data-quick-prompt="มีค่าธรรมเนียมหมกเม็ดไหม แพงกว่ากองอื่นไหม?"
+                      class="text-[11px] px-2.5 py-1 rounded-lg bg-white border border-slate-200 text-slate-700 hover:border-brand-600 hover:text-brand-800 transition">
+                ค่าธรรมเนียมหมกเม็ดไหม?
+              </button>
+            </div>
+          </div>
+
+          <!-- Chat Messages Scrollable Box -->
+          <div id="ai-chat-messages" class="flex-1 overflow-y-auto p-4 space-y-3.5 text-xs">
+            <!-- Bot Welcome message -->
+            <div class="flex gap-2.5 items-start">
+              <div class="w-6 h-6 rounded-full bg-brand-700 text-white flex items-center justify-center shrink-0 text-[10px]">AI</div>
+              <div class="bg-slate-100 text-slate-800 p-3 rounded-2xl rounded-tl-none space-y-1 max-w-[85%]">
+                <p>สวัสดีครับ! ผมคือผู้ช่วยวิเคราะห์กองทุน <strong>FundTwin Factsheet AI</strong> กองทุนที่คุณกำลังดูอยู่นี้ มีอะไรที่คุณสงสัยบ้างครับ?</p>
+                <div class="text-[10px] text-slate-400 mt-1">พร้อมระบบค้นหาและอ้างอิงหน้าหนังสือชี้ชวน</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chat Input -->
+          <div class="p-3 border-t border-slate-200 bg-white">
+            <form id="ai-chat-form" class="flex items-center gap-2">
+              <input type="text" id="ai-chat-input" placeholder="พิมพ์ถามคำถามเกี่ยวกับกองทุนนี้ เช่น เสี่ยงแค่ไหน..."
+                     class="flex-1 text-xs px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-700/20 focus:border-brand-700">
+              <button type="submit" class="p-2.5 rounded-xl bg-brand-700 hover:bg-brand-800 text-white transition">
+                <i data-lucide="send" class="w-4 h-4"></i>
+              </button>
+            </form>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ================================================ -->
+    <!-- VIEW 4: MAIN DASHBOARD & WATCHTOWER              -->
+    <!-- ================================================ -->
+    <div id="view-watchtower" class="hidden space-y-6">
+
+      <!-- Dashboard Top Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h2 class="text-2xl font-bold text-slate-900">แผงควบคุม & หอคอยเฝ้าระวัง (Watchtower)</h2>
+          <p class="text-xs sm:text-sm text-slate-500">
+            ระบบสรุปราคา NAV รายวันแบบ End-of-Day (EOD) 20:00 น. ตรวจสอบ Style Drift และเฝ้าระวังความเสี่ยง
+          </p>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-brand-50 border border-brand-200 text-brand-800 text-xs font-semibold">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            Watchtower Active (EOD Batch)
+          </span>
+        </div>
+      </div>
+
+      <!-- Overview Stats Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+        <div class="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-sm space-y-2">
+          <div class="flex items-center justify-between text-xs text-slate-500">
+            <span>มูลค่าพอร์ตจำลองรวม</span>
+            <i data-lucide="wallet" class="w-4 h-4 text-brand-700"></i>
+          </div>
+          <div class="text-2xl font-bold text-slate-900" id="dash-total-value">฿85,000</div>
+          <div class="text-xs text-emerald-600 font-semibold flex items-center gap-1">
+            <i data-lucide="trending-up" class="w-3.5 h-3.5"></i>
+            <span>+฿6,600 (+8.41%) จากต้นทุน</span>
+          </div>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-sm space-y-2">
+          <div class="flex items-center justify-between text-xs text-slate-500">
+            <span>จำนวนกองทุนที่เฝ้าระวัง</span>
+            <i data-lucide="eye" class="w-4 h-4 text-brand-700"></i>
+          </div>
+          <div class="text-2xl font-bold text-slate-900" id="dash-holdings-count">3 กองทุน</div>
+          <div class="text-xs text-slate-500">
+            มี 1 กองทุนที่ถูกแจ้งเตือนสไตล์เบี่ยงเบน
+          </div>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-sm space-y-2">
+          <div class="flex items-center justify-between text-xs text-slate-500">
+            <span>สัดส่วนสินทรัพย์ปัจจุบัน</span>
+            <i data-lucide="pie-chart" class="w-4 h-4 text-brand-700"></i>
+          </div>
+          <div class="space-y-1.5 pt-1">
+            <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden flex">
+              <div class="bg-brand-600 h-full" style="width: 50%" title="เทคสหรัฐฯ 50%"></div>
+              <div class="bg-teal-500 h-full" style="width: 30%" title="หุ้นไทย 30%"></div>
+              <div class="bg-slate-400 h-full" style="width: 20%" title="ตราสารหนี้ 20%"></div>
+            </div>
+            <div class="flex justify-between text-[10px] text-slate-500 font-medium">
+              <span class="text-brand-700">● สหรัฐฯ 50%</span>
+              <span class="text-teal-600">● หุ้นไทย 30%</span>
+              <span class="text-slate-500">● ตราสารหนี้ 20%</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Main Watchtower Layout: Holdings List + EOD Watchtower Timeline Feed -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+        <!-- Left: Active Holdings List (Col 7) -->
+        <div class="lg:col-span-7 bg-white rounded-2xl border border-slate-200/80 shadow-sm p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-sm text-slate-900 flex items-center gap-2">
+              <i data-lucide="layers" class="w-4 h-4 text-brand-700"></i>
+              กองทุนในพอร์ตที่คุณบันทึกเหตุผลไว้ (Investment Thesis)
+            </h3>
+            <button id="btn-add-new-fund" class="text-xs text-brand-700 font-medium hover:underline flex items-center gap-1">
+              <i data-lucide="plus" class="w-3.5 h-3.5"></i> เพิ่มกองทุนใหม่
+            </button>
+          </div>
+
+          <div id="holdings-list-container" class="space-y-3">
+            <!-- Dynamic injected holdings cards -->
+          </div>
+        </div>
+
+        <!-- Right: Watchtower Timeline Feed (Col 5) -->
+        <div class="lg:col-span-5 bg-white rounded-2xl border border-slate-200/80 shadow-sm p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div>
+              <h3 class="font-bold text-sm text-slate-900 flex items-center gap-2">
+                <i data-lucide="radio" class="w-4 h-4 text-rose-600 animate-pulse"></i>
+                หอคอยเฝ้าระวัง (Watchtower Feed)
+              </h3>
+              <p class="text-[11px] text-slate-500">อัปเดตแจ้งเตือนอัตโนมัติรอบค่ำ 20:00 น.</p>
+            </div>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-mono">EOD Alert</span>
+          </div>
+
+          <!-- Timeline Notification Items -->
+          <div class="space-y-3 text-xs">
+
+            <!-- Red alert: NAV Drop -->
+            <div class="p-3.5 rounded-xl bg-rose-50/80 border border-rose-200 text-slate-800 space-y-1.5 transition hover:bg-rose-50">
+              <div class="flex items-center justify-between">
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-600 text-white flex items-center gap-1">
+                  <i data-lucide="alert-octagon" class="w-3 h-3"></i> ราคาลดลงถึงเกณฑ์
+                </span>
+                <span class="text-[10px] text-slate-400 font-mono">วันนี้ 20:00 น.</span>
+              </div>
+              <p class="font-semibold text-rose-950">กองทุน K-USXNDQ-A(A) NAV ลดลง -3.2%</p>
+              <p class="text-slate-600 text-[11px] leading-relaxed">
+                ราคาปรับตัวลงแตะจุดเตือนภัยรายวันจากดัชนีกลุ่มชิปต่างประเทศ ตรวจสอบแล้วยังไม่หลุดเส้น MA200 สามารถถือต่อตามแผน DCA ได้
+              </p>
+            </div>
+
+            <!-- Orange alert: Style Drift -->
+            <div class="p-3.5 rounded-xl bg-amber-50/80 border border-amber-200 text-slate-800 space-y-1.5 transition hover:bg-amber-50">
+              <div class="flex items-center justify-between">
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-600 text-white flex items-center gap-1">
+                  <i data-lucide="shuffle" class="w-3 h-3"></i> เตือน Style Drift!
+                </span>
+                <span class="text-[10px] text-slate-400 font-mono">เมื่อวาน 20:05 น.</span>
+              </div>
+              <p class="font-semibold text-amber-950">B-INNOTECH ลดสัดส่วนหุ้นเทคโนโลยีลง -8%</p>
+              <p class="text-slate-600 text-[11px] leading-relaxed">
+                บลจ. รายงานลดสัดส่วนหุ้นเซมิคอนดักเตอร์และเพิ่มเงินสด ซึ่งอาจขัดแย้งกับเหตุผลซื้อของคุณที่บันทึกว่า <em>"เชื่อว่าชิป AI จะเติบโตยาวนาน"</em>
+              </p>
+            </div>
+
+            <!-- Green alert: Dividend Declaration -->
+            <div class="p-3.5 rounded-xl bg-emerald-50/80 border border-emerald-200 text-slate-800 space-y-1.5 transition hover:bg-emerald-50">
+              <div class="flex items-center justify-between">
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-600 text-white flex items-center gap-1">
+                  <i data-lucide="badge-percent" class="w-3 h-3"></i> ประกาศจ่ายเงินปันผล
+                </span>
+                <span class="text-[10px] text-slate-400 font-mono">2 วันก่อน 20:10 น.</span>
+              </div>
+              <p class="font-semibold text-emerald-950">SCBDV-A ประกาศจ่ายปันผล 0.50 บาท/หน่วย</p>
+              <p class="text-slate-600 text-[11px] leading-relaxed">
+                ขึ้นเครื่องหมาย XD ในวันที่ 15 ของเดือนนี้ คาดการณ์คุณจะได้รับเงินปันผลประมาณ ฿750 เข้าบัญชีออมทรัพย์ที่ผูกไว้
+              </p>
+            </div>
+
+            <!-- Blue alert: Factsheet PDF Updated -->
+            <div class="p-3.5 rounded-xl bg-sky-50/80 border border-sky-200 text-slate-800 space-y-1.5 transition hover:bg-sky-50">
+              <div class="flex items-center justify-between">
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-sky-600 text-white flex items-center gap-1">
+                  <i data-lucide="file-text" class="w-3 h-3"></i> อัปเดตหนังสือชี้ชวน
+                </span>
+                <span class="text-[10px] text-slate-400 font-mono">3 วันก่อน 20:15 น.</span>
+              </div>
+              <p class="font-semibold text-sky-950">ก.ล.ต. อัปเดตรายงาน Factsheet รายเดือนใหม่</p>
+              <p class="text-slate-600 text-[11px] leading-relaxed">
+                กองทุน ONE-UGG-RA มีการสลับหุ้น Top 10 โดยเพิ่มหุ้นกลุ่ม AI Cloud เข้ามาแทนหุ้นค้าปลีกเดิม
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <!-- ================================================ -->
+  <!-- MODAL 1: SMART RISK PROFILING QUIZ MODAL         -->
+  <!-- ================================================ -->
+  <div id="modal-risk-quiz" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl space-y-6 relative border border-slate-100">
+
+      <!-- Close Button -->
+      <button id="btn-close-quiz" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 p-1">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <!-- Quiz Header -->
+      <div class="space-y-1">
+        <div class="inline-flex items-center gap-1 text-xs font-semibold text-brand-700 uppercase tracking-wide">
+          <i data-lucide="compass" class="w-4 h-4"></i>
+          <span>Smart Risk Profiling</span>
+        </div>
+        <h3 id="quiz-title" class="text-lg sm:text-xl font-bold text-slate-900">แบบประเมินความเสี่ยงและจัดสัดส่วนอัจฉริยะ</h3>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="flex gap-1.5 pt-1">
+        <div id="quiz-step-1" class="h-1.5 flex-1 rounded-full bg-brand-600 transition-all"></div>
+        <div id="quiz-step-2" class="h-1.5 flex-1 rounded-full bg-slate-200 transition-all"></div>
+        <div id="quiz-step-3" class="h-1.5 flex-1 rounded-full bg-slate-200 transition-all"></div>
+        <div id="quiz-step-4" class="h-1.5 flex-1 rounded-full bg-slate-200 transition-all"></div>
+      </div>
+
+      <!-- Step Content (Dynamic) -->
+      <div id="quiz-step-content" class="min-h-[240px]">
+        <!-- Injected via JS -->
+      </div>
+
+      <!-- Result Content (Hidden initially) -->
+      <div id="quiz-result-content" class="hidden space-y-5 animate-fadeIn">
+        <div class="text-center space-y-2">
+          <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-brand-100 text-brand-700">
+            <i data-lucide="bar-chart-3" class="w-6 h-6"></i>
+          </div>
+          <h4 class="text-lg font-bold text-slate-900">ผลการวิเคราะห์</h4>
+          <p id="quiz-result-type" class="text-brand-800 font-bold text-sm">พอร์ตเติบโตสมดุล</p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <div class="w-28 h-28">
+            <canvas id="quizAllocationPie"></canvas>
+          </div>
+          <div id="quiz-result-breakdown" class="flex-1 grid grid-cols-3 gap-2 text-center">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+
+        <button id="btn-confirm-quiz"
+                class="w-full py-3 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-semibold text-xs sm:text-sm shadow-md shadow-brand-900/10 transition flex items-center justify-center gap-2">
+          <i data-lucide="check-circle" class="w-4 h-4"></i>
+          <span>ดูกองทุนที่แนะนำสำหรับสัดส่วนนี้</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================================================ -->
+  <!-- MODAL 2: INVESTMENT THESIS + BULL/BEAR DEBATE     -->
+  <!-- ================================================ -->
+  <div id="modal-thesis" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl space-y-5 relative border border-slate-100">
+
+      <!-- Close Button -->
+      <button id="btn-close-thesis" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 p-1">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+
+      <!-- Header -->
+      <div class="space-y-1">
+        <div class="text-xs font-bold text-brand-700 uppercase tracking-wide flex items-center gap-1">
+          <i data-lucide="shield-check" class="w-4 h-4"></i>
+          ระบบบันทึกเหตุผลก่อนเพิ่มเข้าพอร์ต
+        </div>
+        <h3 class="text-lg font-bold text-slate-900">
+          เพิ่มกองทุน <span id="thesis-target-code" class="text-brand-800">K-USXNDQ-A(A)</span> เข้า Watchtower
+        </h3>
+      </div>
+
+      <!-- Thesis Input -->
+      <div class="space-y-2">
+        <label class="text-xs font-medium text-slate-700 flex items-center gap-1">
+          <i data-lucide="pencil" class="w-3.5 h-3.5 text-brand-700"></i>
+          เหตุผลที่คุณตัดสินใจลงทุนในกองทุนนี้ (Investment Thesis):
+        </label>
+        <textarea id="thesis-user-input" rows="3"
+                  placeholder="เช่น เชื่อว่าชิป AI และเทคโนโลยีจะเติบโตต่อใน 5 ปีข้างหน้า และต้องการ DCA เดือนละ 3,000 บาท..."
+                  class="w-full p-3 text-xs rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-700/20 focus:border-brand-700 transition leading-relaxed"></textarea>
+      </div>
+
+      <!-- Quick Fill Buttons -->
+      <div class="flex flex-wrap gap-1.5">
+        <span class="text-[10px] text-slate-400 py-1">ตัวอย่างเหตุผล:</span>
+        <button data-thesis-example="เชื่อมั่นว่า AI และหุ้นเทคสหรัฐฯ จะเป็นตัวขับเคลื่อนกำไรระดับโลกใน 5 ปี" class="text-[11px] px-2.5 py-0.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600">
+          เทคสหรัฐฯ โตยาว
+        </button>
+        <button data-thesis-example="ต้องการกระแสเงินสดจากปันผลสม่ำเสมอ เพื่อลดความเสี่ยงพอร์ตโดยรวม" class="text-[11px] px-2.5 py-0.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600">
+          เน้นปันผลสม่ำเสมอ
+        </button>
+      </div>
+
+      <!-- AI Bull / Bear Debate Section -->
+      <div class="space-y-2 pt-2 border-t border-slate-100">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold text-slate-800 flex items-center gap-1">
+            <i data-lucide="scale" class="w-4 h-4 text-brand-700"></i>
+            AI Bull / Bear Debate (วิเคราะห์รอบด้าน)
+          </span>
+          <span class="text-[10px] text-brand-700 font-semibold bg-brand-50 px-2 py-0.5 rounded">สร้างโดย LLM โมเดลคู่หู</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <!-- Bull Card (Green) -->
+          <div class="p-3.5 rounded-2xl bg-emerald-50/80 border border-emerald-200 text-xs space-y-1.5">
+            <div class="font-bold text-emerald-900 flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              🟢 Bull (มุมมองสนับสนุน)
+            </div>
+            <p id="thesis-bull-text" class="text-slate-700 leading-relaxed text-[11px]">
+              ผลประกอบการของหุ้น Top 5 เติบโตเฉลี่ย 18% YoY แรงหนุนจากโครงสร้างพื้นฐาน Data Center และ AI Cloud ที่ยังอยู่ในช่วงเริ่มต้น
+            </p>
+          </div>
+
+          <!-- Bear Card (Red) -->
+          <div class="p-3.5 rounded-2xl bg-rose-50/80 border border-rose-200 text-xs space-y-1.5">
+            <div class="font-bold text-rose-900 flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+              🔴 Bear (ข้อควรระวัง/ความเสี่ยง)
+            </div>
+            <p id="thesis-bear-text" class="text-slate-700 leading-relaxed text-[11px]">
+              ระดับ Valuation (P/E) ค่อนข้างตึงตัวสูงกว่าค่าเฉลี่ย 10 ปี หากดอกเบี้ยสหรัฐฯ ปรับลดช้ากว่าคาด หุ้นกลุ่มนี้อาจเผชิญแรงขายทำกำไร
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Confirmation CTA -->
+      <div class="pt-3">
+        <button id="btn-confirm-watchtower"
+                class="w-full py-3 rounded-xl bg-brand-700 hover:bg-brand-800 text-white font-semibold text-xs sm:text-sm shadow-md shadow-brand-900/10 transition flex items-center justify-center gap-2">
+          <i data-lucide="shield-check" class="w-4 h-4"></i>
+          <span>เข้าใจความเสี่ยงและเริ่มเฝ้าระวัง (Start Watchtower)</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================================================ -->
+  <!-- MODAL 3: CITATION EXCERPT PREVIEW MODAL           -->
+  <!-- ================================================ -->
+  <div id="modal-citation" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 border border-slate-100">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div class="flex items-center gap-2">
+          <i data-lucide="file-search" class="w-5 h-5 text-brand-700"></i>
+          <h4 id="citation-title" class="font-bold text-sm text-slate-900">อ้างอิง: หนังสือชี้ชวน น. 4</h4>
+        </div>
+        <button id="btn-close-citation" class="text-slate-400 hover:text-slate-600 p-1">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-700 font-mono leading-relaxed max-h-56 overflow-y-auto" id="citation-body">
+        <!-- Injected raw text snippet from SEC PDF -->
+      </div>
+
+      <div class="flex items-center justify-between text-[11px] text-slate-400 pt-1">
+        <span>แหล่งที่มา: ก.ล.ต. SEC Open API</span>
+        <button id="btn-close-citation-2" class="px-3 py-1.5 rounded-lg bg-slate-200 text-slate-700 font-medium hover:bg-slate-300">
+          ปิดหน้าต่าง
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vite Entry Point -->
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
