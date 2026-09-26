@@ -155,18 +155,6 @@ npm run preview   # Preview production build
 
 ---
 
-## 📊 Mock Data (กองทุนตัวอย่าง)
-
-| รหัสกองทุน | บลจ. | ประเภท | ความเสี่ยง | Quant Score |
-|---|---|---|---|---|
-| K-USXNDQ-A(A) | KAsset | หุ้นเทคสหรัฐฯ | 6 | 8.8/10 |
-| SCBDV-A | SCBAM | หุ้นไทยปันผลสูง | 6 | 6.2/10 |
-| ONE-UGG-RA | OneAM | หุ้นเติบโตทั่วโลก | 7 | 8.4/10 |
-| B-INNOTECH | BBLAM | หุ้นนวัตกรรม/เทค | 7 | 7.9/10 |
-| K-FIXED-A | KAsset | ตราสารหนี้ | 3 | 9.1/10 |
-
----
-
 ## 📝 License
 
 Private project — All rights reserved.
