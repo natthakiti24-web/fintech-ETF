@@ -134,9 +134,10 @@ GEMINI_API_KEY=your_gemini_api_key
 
 If your existing `.env` uses `VITE_GEMINI_API_KEY`, rename it to
 `GEMINI_API_KEY`; never use the `VITE_` prefix for secrets. Start both the Vite
-frontend and Gemini backend with `npm run dev`. For production, deploy the
-backend separately and route `/api/gemini` to it. Keep `GEMINI_API_KEY` only in
-the backend environment.
+frontend and Gemini backend with `npm run dev`. On Vercel, `api/gemini.js` and
+`api/finnhub/news.js` provide the production serverless endpoints. Add
+`GEMINI_API_KEY` and `FINNHUB_API_KEY` under the Vercel project's Settings >
+Environment Variables, then redeploy. Keep both keys out of `VITE_` variables.
 
 ### Watchtower News (Finnhub)
 
@@ -147,9 +148,9 @@ for each fund ticker. Add a Finnhub API key to the backend environment:
 FINNHUB_API_KEY=your_finnhub_api_key
 ```
 
-The key is used only by `server.js` and is never exposed to the browser. During
+The key is used only by the backend and is never exposed to the browser. During
 development, `npm run dev` proxies `/api/finnhub` to the backend. For production,
-route `/api/finnhub` to the backend as well. News is cached for ten minutes;
+Vercel serves `/api/finnhub/news` through its serverless function. News is cached for ten minutes;
 availability depends on Finnhub coverage for each ticker and the API plan.
 News headlines and summaries are translated into Thai with Gemini. Set both
 `FINNHUB_API_KEY` and `GEMINI_API_KEY` in the backend environment; without a
