@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/yahoo/v8/finance/chart/:symbol",
+      "destination": "/api/yahoo?symbol=:symbol"
+    }
+  ]
+}

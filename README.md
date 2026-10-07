@@ -116,11 +116,11 @@ npm run preview   # Preview production build
 
 ### Yahoo Finance on Vercel
 
-`api/yahoo/[...path].js` proxies the chart endpoint to Yahoo Finance for Vercel
-deployments. The frontend can continue requesting
-`/api/yahoo/v8/finance/chart/{ticker}?interval=1d&range=5d`; no Yahoo API key is
-required. Deploy the project with the repository root as the Vercel project root
-so the `api/` serverless function is included.
+`vercel.json` rewrites the chart endpoint to the `api/yahoo.js` serverless
+function, which proxies requests to Yahoo Finance. The frontend can continue
+requesting `/api/yahoo/v8/finance/chart/{ticker}?interval=1d&range=5d`; no Yahoo
+API key is required. Set the Vercel project Root Directory to `fintech-ETF` so
+both `vercel.json` and the `api/` function are included in the deployment.
 
 ### Factsheet AI (Gemini)
 

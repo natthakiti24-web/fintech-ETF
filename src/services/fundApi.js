@@ -1,6 +1,6 @@
 /**
  * Fund API Service — จัดการข้อมูล ETF จาก Yahoo Finance
- * (ผ่าน Vite Proxy: /api/yahoo เพื่อเลี่ยง CORS และ Header Restrictions)
+ * (ผ่าน same-origin API proxy เพื่อเลี่ยง CORS และ Header Restrictions)
  */
 
 const YAHOO_API_BASE_URL = '/api/yahoo/v8/finance/chart';
