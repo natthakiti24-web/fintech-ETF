@@ -14,7 +14,7 @@ import { createIcons, icons } from 'lucide';
 
 // Data
 import { state } from './data/state.js';
-import { fetchAllFunds } from './services/fundApi.js';
+import { fetchAllFunds, refreshAllFunds } from './services/fundApi.js';
 
 // Router
 import { switchTab, onTabChange } from './utils/router.js';
@@ -25,7 +25,12 @@ import { mountDeepDiveView, loadDeepDive } from './views/deepdive.js';
 import { mountWatchtowerView, renderHoldingsDashboard } from './views/watchtower.js';
 
 // Modals
-import { mountRiskQuizModal, openRiskQuizModal } from './modals/riskQuiz.js';
+import {
+  mountRiskQuizModal,
+  openRiskQuizModal,
+  refreshQuizFundRecommendations,
+  applyPortfolioFilter
+} from './modals/riskQuiz.js';
 import { mountThesisModal } from './modals/thesis.js';
 
 // Components
@@ -68,20 +73,66 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // 6) Fetch real API data & Initial render
-  fetchAllFunds().then(funds => {
+  const hydrateFunds = (funds) => {
     state.apiFunds = funds;
+    refreshQuizFundRecommendations();
+    renderHoldingsDashboard();
     if (funds.length > 0) {
-      state.currentSelectedFund = funds[0];
+      state.currentSelectedFund = funds.find(f => f.id === state.currentSelectedFund?.id) || funds[0];
     }
-    
+
     renderFundTable(funds, (fundId) => {
       state.currentSelectedFund = funds.find(f => f.id === fundId) || funds[0];
       switchTab('deepdive');
     });
 
-    // Re-create icons after initial render
     createIcons({ icons });
-  });
+  };
+
+  fetchAllFunds().then(hydrateFunds);
+
+  // 7) Refresh live market prices in the background without reloading the page
+  window.__fundRefreshTimer = setInterval(async () => {
+    try {
+      const refreshed = await refreshAllFunds();
+      state.apiFunds = refreshed;
+      refreshQuizFundRecommendations();
+      renderHoldingsDashboard();
+      const currentTab = document.querySelector('[data-tab].active')?.dataset.tab || 'screener';
+      if (currentTab === 'screener') {
+        if (state.recommendedFundIds !== null) {
+          renderScreener();
+        } else {
+          const filtered = state.apiFunds.filter((fund) => {
+            const search = (document.getElementById('filter-search')?.value || '').toLowerCase().trim();
+            const amc = document.getElementById('filter-amc')?.value || 'ALL';
+            const category = document.getElementById('filter-category')?.value || 'ALL';
+            const onlyClean = document.getElementById('filter-only-clean')?.checked || false;
+
+            const matchSearch = fund.code.toLowerCase().includes(search) || fund.name.toLowerCase().includes(search);
+            const matchAmc = amc === 'ALL' || fund.amc === amc;
+            const matchCat = category === 'ALL' || fund.category === category;
+            let matchRisk = true;
+            if (state.currentRiskFilter === 'LOW') matchRisk = fund.riskLevel <= 4;
+            if (state.currentRiskFilter === 'MID') matchRisk = fund.riskLevel === 5;
+            if (state.currentRiskFilter === 'HIGH') matchRisk = fund.riskLevel >= 6;
+            let matchClean = true;
+            if (onlyClean) matchClean = fund.redFlags.length === 0;
+            return matchSearch && matchAmc && matchCat && matchRisk && matchClean;
+          });
+          renderFundTable(filtered, (fundId) => {
+            state.currentSelectedFund = state.apiFunds.find(f => f.id === fundId) || state.apiFunds[0];
+            switchTab('deepdive');
+          });
+        }
+      }
+      if (state.currentSelectedFund) {
+        state.currentSelectedFund = state.apiFunds.find(f => f.id === state.currentSelectedFund.id) || state.apiFunds[0];
+      }
+    } catch (error) {
+      console.warn('Live price refresh failed:', error);
+    }
+  }, 300000);
 });
 
 /**
@@ -105,9 +156,7 @@ function wireGlobalNavigation() {
 
   // Onboarding banner: ดูกองทุนที่ตรงกับสัดส่วน
   document.getElementById('btn-apply-portfolio')?.addEventListener('click', () => {
-    switchTab('screener');
-    document.getElementById('filter-category').value = 'US_TECH';
-    document.getElementById('filter-category').dispatchEvent(new Event('change'));
+    applyPortfolioFilter();
   });
 
   // Onboarding banner: ทำแบบทดสอบใหม่

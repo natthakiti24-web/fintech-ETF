@@ -14,6 +14,8 @@ Chart.register(...registerables);
  */
 export function createNavChart(canvas, fund) {
   const ctx = canvas.getContext('2d');
+  const exchangeRate = fund.currency === 'THB' ? 1 / fund.usdToThbRate : 1;
+  const toDisplay = prices => prices.map(price => price * exchangeRate);
 
   return new Chart(ctx, {
     type: 'line',
@@ -22,7 +24,7 @@ export function createNavChart(canvas, fund) {
       datasets: [
         {
           label: `${fund.code} (NAV)`,
-          data: fund.navHistory.fundNav,
+          data: toDisplay(fund.navHistory.fundNav),
           borderColor: '#059669',
           backgroundColor: 'rgba(16, 185, 129, 0.08)',
           fill: true,
@@ -32,7 +34,7 @@ export function createNavChart(canvas, fund) {
         },
         {
           label: 'Benchmark (ดัชนีอ้างอิง)',
-          data: fund.navHistory.benchmark,
+          data: toDisplay(fund.navHistory.benchmark),
           borderColor: '#94a3b8',
           borderDash: [5, 5],
           fill: false,
@@ -52,7 +54,7 @@ export function createNavChart(canvas, fund) {
         },
         tooltip: {
           callbacks: {
-            label: (context) => ` ${context.dataset.label}: ${context.parsed.y} บาท`
+            label: (context) => ` ${context.dataset.label}: $${context.parsed.y.toLocaleString('en-US', { maximumFractionDigits: 2 })}`
           }
         }
       },
@@ -80,14 +82,15 @@ export function toggleCrisisChart(chartInstance, fund, isCrisis) {
   if (!chartInstance) return;
 
   const dataset = chartInstance.data.datasets[0];
+  const exchangeRate = fund.currency === 'THB' ? 1 / fund.usdToThbRate : 1;
 
   if (isCrisis) {
-    dataset.data = fund.navHistory.crisisNav;
+    dataset.data = fund.navHistory.crisisNav.map(price => price * exchangeRate);
     dataset.label = `${fund.code} [วิกฤตจำลอง -25.5%]`;
     dataset.borderColor = '#e11d48';
     dataset.backgroundColor = 'rgba(225, 29, 72, 0.12)';
   } else {
-    dataset.data = fund.navHistory.fundNav;
+    dataset.data = fund.navHistory.fundNav.map(price => price * exchangeRate);
     dataset.label = `${fund.code} (NAV)`;
     dataset.borderColor = '#059669';
     dataset.backgroundColor = 'rgba(16, 185, 129, 0.08)';
@@ -108,7 +111,7 @@ export function createAllocationChart(canvas, allocation) {
   return new Chart(ctx, {
     type: 'doughnut',
     data: {
-      labels: ['หุ้นเทคโนโลยี', 'หุ้นไทยปันผล', 'ตราสารหนี้'],
+      labels: ['ETF หุ้นเทคโนโลยี', 'ETF หุ้นไทย', 'ETF ตราสารหนี้'],
       datasets: [{
         data: [allocation.tech, allocation.thai, allocation.debt],
         backgroundColor: ['#059669', '#14b8a6', '#94a3b8'],

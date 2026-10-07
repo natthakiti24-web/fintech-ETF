@@ -2,9 +2,6 @@
    FundTwin OS — Global Styles
    ================================================================== */
 
-/* Google Fonts: Prompt (Thai) & Inter (Latin) */
-@import url('https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap');
-
 /* ==================================================================
    CSS Custom Properties (Design Tokens)
    ================================================================== */
@@ -19,6 +16,7 @@
   --brand-800: #065f46;
   --brand-900: #064e3b;
   --brand-950: #022c22;
+  --hover-accent: #ffb74d;
 
   /* Slate extended */
   --slate-850: #152033;
@@ -26,7 +24,7 @@
   --slate-950: #020617;
 
   /* Typography */
-  --font-sans: 'Prompt', 'Inter', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Prompt', sans-serif;
 }
 
 /* ==================================================================
@@ -55,6 +53,21 @@ body {
 ::selection {
   background-color: var(--brand-500);
   color: white;
+}
+
+[class*="hover:bg-"]:hover,
+[class*="hover:from-"]:hover,
+[class*="hover:to-"]:hover {
+  background-color: var(--hover-accent) !important;
+  background-image: none !important;
+}
+
+[class*="hover:border-"]:hover {
+  border-color: var(--hover-accent) !important;
+}
+
+[class*="hover:text-"]:hover {
+  color: var(--hover-accent) !important;
 }
 
 /* ==================================================================

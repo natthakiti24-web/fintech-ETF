@@ -9,8 +9,8 @@
 
 | Feature | รายละเอียด |
 |---|---|
-| **🚀 Smart Risk Profiling** | แบบประเมินความเสี่ยง 4 ข้อ พร้อมแนะนำสัดส่วนพอร์ตอัตโนมัติ (Conservative / Balanced / Aggressive) |
-| **🔍 Fund Screener** | คัดกรองกองทุนรวมไทย + FIF ด้วย Quant Score, Red Flag, ระดับความเสี่ยง, บลจ. |
+| **🚀 Smart Risk Profiling** | แบบประเมินความเสี่ยง 4 ข้อ พร้อมแนะนำสัดส่วนพอร์ตอัตโนมัติ (Conservative / Balanced / Aggressive) และคัด 10 ETF ตามระดับความเสี่ยง |
+| **🔍 Fund Screener** | คัดกรอง ETF ไทยและต่างประเทศด้วย Quant Score, Red Flag, ระดับความเสี่ยง, บลจ. |
 | **📊 Deep Dive Analysis** | กราฟ NAV ย้อนหลัง vs Benchmark พร้อม Crisis Simulation (Stress Test) |
 | **🤖 Factsheet AI Chat** | แปลภาษาหนังสือชี้ชวนเป็นภาษาคนเข้าใจง่าย พร้อมอ้างอิงหน้าเอกสาร |
 | **🏰 Watchtower Dashboard** | เฝ้าระวังพอร์ตจำลอง ตรวจจับ Style Drift, แจ้งเตือนปันผล, อัปเดต Factsheet |
@@ -32,7 +32,7 @@ koki/
     ├── main.js                   # 🚀 Entry point — bootstrap, mount, wire events
     │
     ├── data/                     # 📦 Data Layer
-    │   ├── funds.js              #   Mock dataset กองทุนรวม 5 กอง + คำถาม Quiz
+    │   ├── funds.js              #   คำถาม Quiz
     │   └── state.js              #   Centralized app state + CRUD operations
     │
     ├── views/                    # 📄 View Layer (แต่ละ tab/page)
@@ -86,7 +86,7 @@ koki/
 ┌─────────────────────┐
 │     Data Layer      │
 ├─────────────────────┤
-│ funds.js  (dataset) │
+│ funds.js (quiz data) │
 │ state.js  (app state│
 │            + CRUD)  │
 └─────────────────────┘
@@ -114,6 +114,41 @@ npm run build     # Output → dist/
 npm run preview   # Preview production build
 ```
 
+### Factsheet AI (Gemini)
+
+Factsheet AI generates answers through Gemini on the backend. The browser calls
+`/api/gemini` and never receives the API key. Set `GEMINI_API_KEY` in `.env` in
+the project root or its parent directory before starting the app:
+
+```env
+GEMINI_API_KEY=your_gemini_api_key
+```
+
+If your existing `.env` uses `VITE_GEMINI_API_KEY`, rename it to
+`GEMINI_API_KEY`; never use the `VITE_` prefix for secrets. Start both the Vite
+frontend and Gemini backend with `npm run dev`. For production, deploy the
+backend separately and route `/api/gemini` to it. Keep `GEMINI_API_KEY` only in
+the backend environment.
+
+### Watchtower News (Finnhub)
+
+Watchtower requests up to three company-news articles from the past seven days
+for each fund ticker. Add a Finnhub API key to the backend environment:
+
+```env
+FINNHUB_API_KEY=your_finnhub_api_key
+```
+
+The key is used only by `server.js` and is never exposed to the browser. During
+development, `npm run dev` proxies `/api/finnhub` to the backend. For production,
+route `/api/finnhub` to the backend as well. News is cached for ten minutes;
+availability depends on Finnhub coverage for each ticker and the API plan.
+News headlines and summaries are translated into Thai with Gemini. Set both
+`FINNHUB_API_KEY` and `GEMINI_API_KEY` in the backend environment; without a
+Gemini key, the original English news remains visible with a translation notice.
+If the primary Gemini model is temporarily unavailable, the backend falls back
+to a tested lightweight model for news translation.
+
 ---
 
 ## 🛠️ Tech Stack
@@ -131,7 +166,7 @@ npm run preview   # Preview production build
 ## 📂 Module Responsibilities
 
 ### `src/data/` — Data Layer
-- **`funds.js`** — ข้อมูลกองทุนรวม 5 กอง (NAV, holdings, sparkline, QA database, risk quiz questions)
+- **`funds.js`** — คำถามแบบประเมินความเสี่ยงสำหรับจัดพอร์ต ETF
 - **`state.js`** — Centralized state (selected fund, user holdings, quiz state) + helper functions (`addHolding`, `removeHolding`)
 
 ### `src/views/` — View Layer

@@ -16,38 +16,34 @@ export function appendChatMessage(sender, text, citations = []) {
   const msgDiv = document.createElement('div');
   msgDiv.className = `flex gap-2.5 items-start ${isUser ? 'flex-row-reverse' : ''}`;
 
-  let citationChips = '';
-  if (citations && citations.length > 0) {
-    citationChips = `<div class="pt-2 flex flex-wrap gap-1.5">
-      ${citations.map(c => `
-        <button data-citation-title="${c.title}" data-citation-snippet="${c.snippet}"
-                class="citation-btn inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-100 text-emerald-900 hover:bg-emerald-200 border border-emerald-300/60 transition">
-          <i data-lucide="external-link" class="w-3 h-3 text-emerald-700"></i>
-          <span>[${c.title}]</span>
-        </button>
-      `).join('')}
-    </div>`;
+  const avatar = document.createElement('div');
+  avatar.className = `w-6 h-6 rounded-full ${isUser ? 'bg-slate-800 text-white' : 'bg-brand-700 text-white'} flex items-center justify-center shrink-0 text-[10px] font-bold`;
+  avatar.textContent = isUser ? 'คุณ' : 'AI';
+
+  const messageBody = document.createElement('div');
+  messageBody.className = `${isUser ? 'bg-brand-700 text-white rounded-tr-none' : 'bg-slate-100 text-slate-800 rounded-tl-none'} p-3 rounded-2xl max-w-[85%] space-y-1`;
+  const messageText = document.createElement('p');
+  messageText.className = 'leading-relaxed whitespace-pre-wrap';
+  messageText.textContent = text;
+  messageBody.appendChild(messageText);
+
+  if (citations.length > 0) {
+    const citationList = document.createElement('div');
+    citationList.className = 'pt-2 flex flex-wrap gap-1.5';
+    citations.forEach(citation => {
+      const button = document.createElement('button');
+      button.className = 'citation-btn inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium bg-emerald-100 text-emerald-900 hover:bg-emerald-200 border border-emerald-300/60 transition';
+      button.textContent = `[${citation.title}]`;
+      button.addEventListener('click', () => _openCitationModal(citation.title, citation.snippet));
+      citationList.appendChild(button);
+    });
+    messageBody.appendChild(citationList);
   }
 
-  msgDiv.innerHTML = `
-    <div class="w-6 h-6 rounded-full ${isUser ? 'bg-slate-800 text-white' : 'bg-brand-700 text-white'} flex items-center justify-center shrink-0 text-[10px] font-bold">
-      ${isUser ? 'คุณ' : 'AI'}
-    </div>
-    <div class="${isUser ? 'bg-brand-700 text-white rounded-tr-none' : 'bg-slate-100 text-slate-800 rounded-tl-none'} p-3 rounded-2xl max-w-[85%] space-y-1">
-      <p class="leading-relaxed">${text}</p>
-      ${citationChips}
-    </div>
-  `;
+  msgDiv.append(avatar, messageBody);
 
   container.appendChild(msgDiv);
   container.scrollTop = container.scrollHeight;
-
-  // Attach citation click handlers
-  msgDiv.querySelectorAll('.citation-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      _openCitationModal(btn.dataset.citationTitle, btn.dataset.citationSnippet);
-    });
-  });
 
   refreshIcons();
 }
@@ -78,15 +74,14 @@ export async function generateFactsheetAnswer(query, fund) {
   container.appendChild(loadingDiv);
   container.scrollTop = container.scrollHeight;
 
-  // 2. เรียก API จริง
-  const result = await askGeminiAboutFund(query, fund);
-  
-  // 3. เอาสถานะ "กำลังคิด..." ออก
-  const loadingEl = document.getElementById(tempId);
-  if (loadingEl) loadingEl.remove();
-
-  // 4. นำคำตอบมาแสดง
-  appendChatMessage('ai', result.answer, result.citations);
+  try {
+    const result = await askGeminiAboutFund(query, fund);
+    appendChatMessage('ai', result.answer, result.citations);
+  } catch (error) {
+    appendChatMessage('ai', error.message || 'เรียก Gemini ไม่สำเร็จ กรุณาลองอีกครั้ง');
+  } finally {
+    document.getElementById(tempId)?.remove();
+  }
 }
 
 /**

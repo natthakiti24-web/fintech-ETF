@@ -2,7 +2,7 @@
  * Deep Dive View — วิเคราะห์กองทุนเชิงลึก + AI Factsheet Chat
  */
 import { state } from '../data/state.js';
-import { refreshIcons } from '../utils/helpers.js';
+import { refreshIcons, formatFundNav } from '../utils/helpers.js';
 import { switchTab } from '../utils/router.js';
 import { createNavChart, toggleCrisisChart } from '../components/charts.js';
 import { appendChatMessage, generateFactsheetAnswer, resetChat } from '../components/aiChat.js';
@@ -54,9 +54,7 @@ export function loadDeepDive() {
   document.getElementById('dd-fund-code').innerText = fund.code;
   document.getElementById('dd-fund-name').innerText = fund.name;
   document.getElementById('dd-fund-risk').innerText = `เสี่ยงระดับ ${fund.riskLevel}`;
-  const currencySymbol = fund.currency === 'USD' ? '$' : '';
-  const currencySuffix = fund.currency === 'USD' ? ' USD' : ' ฿';
-  document.getElementById('dd-fund-nav').innerText = `${currencySymbol}${fund.nav.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 4 })}${currencySuffix}`;
+  document.getElementById('dd-fund-nav').innerText = formatFundNav(fund);
   document.getElementById('dd-fund-return1y').innerText = fund.return1y;
   document.getElementById('dd-fund-dividend').innerText = fund.dividend;
   document.getElementById('dd-fund-fee').innerText = fund.fee;

@@ -1,5 +1,5 @@
 /**
- * Screener View — ค้นหาและคัดกรองกองทุนรวม
+ * Screener View — ค้นหาและคัดกรอง ETF
  */
 import { state } from '../data/state.js';
 import { renderFundTable, toggleScreenerView } from '../components/fundTable.js';
@@ -17,6 +17,7 @@ export function mountScreenerView() {
 
   // Filter inputs
   searchInput?.addEventListener('input', () => {
+    state.recommendedFundIds = null;
     filterFunds();
     
     // ตั้ง Debounce สำหรับค้นหา Ticker จาก Yahoo Finance หากไม่มีในรายการ
@@ -41,9 +42,18 @@ export function mountScreenerView() {
     }
   });
 
-  document.getElementById('filter-amc')?.addEventListener('change', () => filterFunds());
-  document.getElementById('filter-category')?.addEventListener('change', () => filterFunds());
-  document.getElementById('filter-only-clean')?.addEventListener('change', () => filterFunds());
+  document.getElementById('filter-amc')?.addEventListener('change', () => {
+    state.recommendedFundIds = null;
+    filterFunds();
+  });
+  document.getElementById('filter-category')?.addEventListener('change', () => {
+    state.recommendedFundIds = null;
+    filterFunds();
+  });
+  document.getElementById('filter-only-clean')?.addEventListener('change', () => {
+    state.recommendedFundIds = null;
+    filterFunds();
+  });
 
   // Risk level buttons
   document.querySelectorAll('.risk-btn').forEach(btn => {
@@ -84,7 +94,11 @@ async function handleRemoteTickerSearch(query) {
  * Render กองทุนทั้งหมดใน screener (เรียกเมื่อ tab เปลี่ยน)
  */
 export function renderScreener() {
-  const fundsToRender = state.apiFunds || [];
+  const fundsToRender = state.recommendedFundIds === null
+    ? state.apiFunds || []
+    : state.recommendedFundIds
+      .map(id => state.apiFunds.find(fund => fund.id === id))
+      .filter(Boolean);
   renderFundTable(fundsToRender, openDeepDive);
 }
 
@@ -124,6 +138,7 @@ function filterFunds() {
 }
 
 function setRiskFilter(level, btn) {
+  state.recommendedFundIds = null;
   document.querySelectorAll('.risk-btn').forEach(b => {
     b.className = 'risk-btn py-1.5 text-[11px] rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 font-medium';
   });
@@ -141,6 +156,7 @@ function setRiskFilter(level, btn) {
 }
 
 function resetScreenerFilters() {
+  state.recommendedFundIds = null;
   document.getElementById('filter-search').value = '';
   document.getElementById('filter-amc').value = 'ALL';
   document.getElementById('filter-category').value = 'ALL';

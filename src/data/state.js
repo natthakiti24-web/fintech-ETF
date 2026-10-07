@@ -3,43 +3,6 @@
  * ใช้ reactive pattern ผ่าน event emitter เพื่อให้ views ต่างๆ อัปเดตตาม state
  */
 
-/** กองทุนจริงที่จำลองผู้ใช้เพิ่มเข้า Watchtower */
-const _userHoldings = [
-  {
-    id: 'tdex.bk',
-    code: 'TDEX',
-    name: 'ThaiDEX SET50 ETF (กองทุนเปิดไทยเด็กซ์เซ็ท 50)',
-    units: 5000,
-    costNav: 10.20,
-    currentNav: 10.69,
-    thesis: 'ลงทุนเกาะดัชนีหุ้นไทย SET50 กระจายความเสี่ยงในบริษัทขนาดใหญ่ที่สุด 50 บริษัท',
-    dateAdded: '15 ส.ค. 2026',
-    driftAlert: false
-  },
-  {
-    id: '1div.bk',
-    code: '1DIV',
-    name: 'ThaiDEX SET High Dividend ETF',
-    units: 3000,
-    costNav: 13.80,
-    currentNav: 14.50,
-    thesis: 'ต้องการกระแสเงินสดจากเงินปันผลสม่ำเสมอ ~4-5% ต่อปีเพื่อเป็น Passive Income',
-    dateAdded: '01 ก.ค. 2026',
-    driftAlert: false
-  },
-  {
-    id: 'qqq',
-    code: 'QQQ',
-    name: 'Invesco QQQ Trust (Nasdaq 100)',
-    units: 50,
-    costNav: 480.00,
-    currentNav: 535.20,
-    thesis: 'เชื่อมั่นในการเติบโตของ Big Tech และ AI ในระยะยาว 5 ปีข้างหน้า',
-    dateAdded: '20 ส.ค. 2026',
-    driftAlert: true
-  }
-];
-
 /**
  * Centralized App State
  */
@@ -52,7 +15,8 @@ export const state = {
   currentQuizStep: 1,
   quizAnswers: {},
   currentRiskFilter: 'ALL',
-  userHoldings: _userHoldings
+  recommendedFundIds: null,
+  userHoldings: []
 };
 
 /**
@@ -68,19 +32,38 @@ export function getFundById(fundId) {
  * เพิ่มกองทุนเข้า Watchtower
  * @param {object} fund - fund object จาก API
  * @param {string} thesis - เหตุผลในการลงทุน
+ * @param {number} investmentAmountThb - มูลค่าเงินลงทุนรวมที่แปลงเป็น THB แล้ว
  */
-export function addHolding(fund, thesis) {
+export function addHolding(fund, thesis, investmentAmountThb) {
+  const currency = fund.currency || 'THB';
+  const usdToThbRate = Number(fund.usdToThbRate);
+  if (!Number.isFinite(investmentAmountThb) || investmentAmountThb <= 0) {
+    throw new RangeError('Investment amount must be greater than zero');
+  }
+  if (currency === 'USD' && (!Number.isFinite(usdToThbRate) || usdToThbRate <= 0)) {
+    throw new RangeError('A valid USD/THB exchange rate is required');
+  }
+
+  const nav = Number(fund.nav);
+  if (!Number.isFinite(nav) || nav <= 0) {
+    throw new RangeError('A valid fund NAV is required');
+  }
+  const purchaseNavThb = currency === 'USD' ? nav * usdToThbRate : nav;
   const existing = state.userHoldings.find(h => h.id === fund.id);
   if (existing) {
     existing.thesis = thesis;
+    existing.investedAmountThb = investmentAmountThb;
+    existing.purchaseNavThb = purchaseNavThb;
   } else {
     state.userHoldings.push({
       id: fund.id,
       code: fund.code,
       name: fund.name,
-      units: 1000,
-      costNav: fund.nav,
+      investedAmountThb: investmentAmountThb,
+      purchaseNavThb,
       currentNav: fund.nav,
+      currency,
+      usdToThbRate,
       thesis,
       dateAdded: 'วันนี้',
       driftAlert: false

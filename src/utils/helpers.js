@@ -11,12 +11,56 @@ export function refreshIcons() {
 }
 
 /**
- * Format ตัวเลขเงินเป็น ฿xx,xxx
+ * Format ตัวเลขเงินเป็น $xx,xxx (แสดงแบบ USD เหมือนเวอร์ชันก่อนหน้า)
  * @param {number} amount
  * @returns {string}
  */
 export function formatCurrency(amount) {
-  return `฿${amount.toLocaleString('th-TH', { maximumFractionDigits: 0 })}`;
+  return `$${amount.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
+}
+
+/**
+ * Convert an asset price to USD for display, matching the previous price format.
+ * @param {number} amount
+ * @param {string} currency
+ * @param {number} usdToThbRate
+ * @returns {number}
+ */
+export function convertToThb(amount, currency = 'THB', usdToThbRate = 1) {
+  return currency === 'THB' ? amount / usdToThbRate : amount;
+}
+
+/**
+ * Convert a native asset price to Thai baht for portfolio calculations.
+ * @param {number} amount
+ * @param {string} currency
+ * @param {number} usdToThbRate
+ * @returns {number}
+ */
+export function convertToPortfolioThb(amount, currency = 'THB', usdToThbRate = 1) {
+  return currency === 'USD' ? amount * usdToThbRate : amount;
+}
+
+/**
+ * Format a portfolio amount in Thai baht.
+ * @param {number} amount
+ * @returns {string}
+ */
+export function formatThbCurrency(amount) {
+  return `฿${amount.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
+/**
+ * Format a fund's NAV in USD display mode.
+ * @param {object} fund
+ * @returns {string}
+ */
+export function formatFundNav(fund) {
+  if (fund.currency === 'THB') {
+    return `฿${Number(fund.nav).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 4 })}`;
+  }
+  const amount = convertToThb(fund.nav, fund.currency, fund.usdToThbRate);
+  return `$${amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 4 })}`;
 }
 
 /**

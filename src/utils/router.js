@@ -8,9 +8,9 @@ const VIEW_IDS = ['landing', 'screener', 'deepdive', 'watchtower'];
 
 /** CSS classes สำหรับสถานะ nav button */
 const NAV_CLASSES = {
-  active: 'px-3 py-2 text-xs sm:text-sm font-medium rounded-lg transition-all flex items-center gap-1.5 text-brand-800 bg-brand-50 border border-brand-200 shadow-sm',
-  inactive: 'px-3 py-2 text-xs sm:text-sm font-medium rounded-lg transition-all flex items-center gap-1.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100',
-  watchtowerActive: 'px-3 py-2 text-xs sm:text-sm font-medium rounded-lg transition-all flex items-center gap-1.5 text-brand-800 bg-brand-50 border border-brand-200 shadow-sm relative'
+  active: 'px-3 py-2 text-xs sm:text-sm font-medium rounded-lg transition-all flex items-center gap-1.5 text-brand-800 bg-brand-50 border border-blue-400 shadow-sm',
+  inactive: 'px-3 py-2 text-xs sm:text-sm font-medium rounded-lg transition-all flex items-center gap-1.5 text-slate-600 border border-blue-400 hover:text-slate-900 hover:bg-slate-100 relative',
+  watchtowerActive: 'px-3 py-2 text-xs sm:text-sm font-medium rounded-lg transition-all flex items-center gap-1.5 text-brand-800 bg-brand-50 border border-blue-400 shadow-sm relative'
 };
 
 /** Callbacks ที่จะเรียกเมื่อเปลี่ยน tab */

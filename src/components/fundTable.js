@@ -1,7 +1,7 @@
 /**
  * Fund Table Component — แสดง table และ cards view ของกองทุน
  */
-import { refreshIcons, generateSparkline } from '../utils/helpers.js';
+import { refreshIcons, generateSparkline, formatFundNav } from '../utils/helpers.js';
 
 /**
  * Render ทั้ง table view และ card view สำหรับ fund screener
@@ -26,7 +26,7 @@ export function renderFundTable(funds, onDeepDive) {
     const { svgPoints, strokeColor } = generateSparkline(fund.sparkline);
     const redFlagHTML = _buildRedFlagHTML(fund);
 
-    const formattedPrice = `${fund.currency === 'USD' ? '$' : ''}${fund.nav.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 4 })} ${fund.currency === 'USD' ? 'USD' : '฿'}`;
+    const formattedPrice = formatFundNav(fund);
 
     // --- Table Row ---
     const tr = document.createElement('tr');
@@ -66,9 +66,9 @@ export function renderFundTable(funds, onDeepDive) {
         </span>
       </td>
       <td class="py-3 px-3">${redFlagHTML}</td>
-      <td class="py-3 px-4 text-right">
+      <td class="py-3 px-4 w-[220px] text-right whitespace-nowrap">
         <button data-deepdive="${fund.id}" 
-                class="px-3 py-1.5 rounded-lg bg-brand-50 hover:bg-brand-100 text-brand-800 font-medium text-xs border border-brand-200 transition">
+                class="w-full px-3 py-1.5 rounded-lg bg-brand-50 hover:bg-brand-100 text-brand-800 font-medium text-xs border border-brand-200 transition">
           วิเคราะห์เชิงลึก
         </button>
       </td>

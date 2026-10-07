@@ -18,9 +18,15 @@ export default defineConfig({
             proxyReq.setHeader('User-Agent', 'Mozilla/5.0');
           });
         }
+      },
+      '/api/gemini': {
+        target: 'http://127.0.0.1:3001',
+        changeOrigin: true
+      },
+      '/api/finnhub': {
+        target: 'http://127.0.0.1:3001',
+        changeOrigin: true
       }
     }
   }
 });
-
-
